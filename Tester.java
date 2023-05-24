@@ -25,7 +25,7 @@ public class Tester {
     int[] DIRECTIONS = {0,1,2,3}; // 0 = Down, 1 = Up, 2 = Left, 3 = Right
     static int dir = 0;
 
-    public static void Populate(char[][] arr){
+    public static void generate(char[][] arr){ // Generate world with a 25% chance of having an X at any given point
         for(int i = 0; i < arr.length; i++){
             for(int j = 0; j < arr[i].length; j++){
                 int num = (int)(Math.random() * 4);
@@ -36,7 +36,7 @@ public class Tester {
                 }
             }
         }
-    } // Populates world with a 25% chance of having an X at any given point
+    }
 
     public static int[] findR(){
         for (int i = 0; i < world.length; i++) {
@@ -57,7 +57,7 @@ public class Tester {
         }
     }
 
-    public static int IR(){
+    public static int IR_1(){ // Sensor at front
         int count = 0;
         int[] coords = findR();
         int row = coords[0];
@@ -99,26 +99,101 @@ public class Tester {
                 }
             }
         }
-
-
-
         return count;
     }
-
-    public static int Touch(){
+    public static int IR_2(){ // Sensor at left side
+        int count = 0;
         int[] coords = findR();
         int row = coords[0];
         int col = coords[1];
 
-//        if(row == 19 || row == 0 || col == 19 || col == 0){
-//            return 1;
-//        }
-//
-//        if(world[row+1][col] == 'X' || world[row-1][col] == 'X' || world[row][col+1] == 'X' || world[row][col-1] == 'X'){
-//            return 1;
-//        }
-//
-//        return 0;
+        if(dir == 0 && row < 19){ // Facing down
+            for(int i = col+1; i < world.length; i++){
+                if(world[row][i] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 1 && row > 0){ // Facing up
+            for(int i = col-1; i > -1; i--){
+                if(world[row][i] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 2 && col > 0){ // Facing left
+            for(int i = row+1; i < world.length; i++){
+                if(world[i][col] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 3){ // Facing right
+            for(int i = row-1; i > -1; i--){
+                if(i > -1 && world[i][col] != 'X' && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+    public static int IR_3(){ // Sensor at right side
+        int count = 0;
+        int[] coords = findR();
+        int row = coords[0];
+        int col = coords[1];
+
+        if(dir == 0 && row < 19){ // Facing down
+            for(int i = col-1; i > -1; i--){
+                if(world[row][i] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 1 && row > 0){ // Facing up
+            for(int i = col+1; i < world.length; i++){
+                if(world[row][i] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 2 && col > 0){ // Facing left
+            for(int i = row-1; i > -1; i--){
+                if(i > -1 && world[i][col] != 'X' && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+        } else if(dir == 3){ // Facing right
+            for(int i = row+1; i < world.length; i++){
+                if(world[i][col] != 'X' && i < 20 && col < 20){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static int Touch_1(){
+        int[] coords = findR();
+        int row = coords[0];
+        int col = coords[1];
 
         if(dir == 0){ // Facing down
             if(row == 19 || world[row+1][col] == 'X'){
@@ -145,6 +220,18 @@ public class Tester {
         return 0;
 
     }
+    public static int Touch_2(){
+        if(IR_2() == 0){
+            return 1;
+        }
+        return 0;
+    }
+    public static int Touch_3(){
+        if(IR_3() == 0){
+            return 1;
+        }
+        return 0;
+    }
 
     public static int state(){
         if(state == 1){
@@ -164,7 +251,6 @@ public class Tester {
             dir = 1;
         }
     }
-
     public static void rotateRight(){
         if(dir == 0){
             dir = 2;
@@ -178,38 +264,84 @@ public class Tester {
     }
 
     public static void trainRobot(){
-        DataSet trainingSet = new DataSet(3,6);
+        DataSet trainingSet = new DataSet(7,6);
 
-//        {inputs: IR_fn1(), Touch_fn1(), state -> forward_normal, turn-right, turn-left, stop, backup, touching}
-
-        trainingSet.add(new DataSetRow(new double[]{3,0,0},
+//        {inputs: IR_1(), IR_2(), IR_3(), Touch_1(), Touch_2(), Touch_3(), state ->
+//        forward_normal, turn-right, turn-left, stop, backup, touching}
+        trainingSet.add(new DataSetRow(new double[]{1,0,1,0,1,0,0},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{4,1,0},
+        trainingSet.add(new DataSetRow(new double[]{2,1,1,0,0,0,0},
+                new double[]{1,0,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{3,2,1,0,0,0,0},
+                new double[]{1,0,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{4,1,0,0,0,1,0},
                 new double[]{1,0,0,0,0,1}));
-        trainingSet.add(new DataSetRow(new double[]{5,0,1},
+        trainingSet.add(new DataSetRow(new double[]{5,2,1,0,0,0,1},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{6,1,0},
+        trainingSet.add(new DataSetRow(new double[]{6,3,0,0,0,1,0},
                 new double[]{1,0,0,0,0,1}));
-        trainingSet.add(new DataSetRow(new double[]{7,0,0},
+        trainingSet.add(new DataSetRow(new double[]{8,5,2,0,0,0,1},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{9,1,0},
+        trainingSet.add(new DataSetRow(new double[]{12,3,5,0,0,0,0},
                 new double[]{1,0,0,0,0,1}));
-        trainingSet.add(new DataSetRow(new double[]{8,0,1},
+        trainingSet.add(new DataSetRow(new double[]{13,0,0,0,1,1,1},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{12,0,1},
+        trainingSet.add(new DataSetRow(new double[]{12,3,10,1,0,0,1},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{14,0,0},
+        trainingSet.add(new DataSetRow(new double[]{14,5,0,0,0,1,1},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{15,0,0},
+        trainingSet.add(new DataSetRow(new double[]{14,4,2,0,0,0,0},
+                new double[]{1,0,0,0,0,1}));
+        trainingSet.add(new DataSetRow(new double[]{15,0,0,0,1,1,0},
                 new double[]{1,0,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{0,1,1},
+        trainingSet.add(new DataSetRow(new double[]{16,3,10,0,0,0,1},
+                new double[]{1,0,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{17,10,0,0,0,1,0},
+                new double[]{1,0,0,0,0,1}));
+        trainingSet.add(new DataSetRow(new double[]{19,0,4,0,1,0,1},
+                new double[]{1,0,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{20,8,2,0,0,0,0},
+                new double[]{1,0,0,0,0,1}));
+        trainingSet.add(new DataSetRow(new double[]{0,1,4,1,0,0,0},
                 new double[]{0,1,0,0,0,0}));
-        trainingSet.add(new DataSetRow(new double[]{0,1,0},
+        trainingSet.add(new DataSetRow(new double[]{0,3,10,1,0,0,1},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{0,7,2,1,0,0,1},
                 new double[]{0,0,1,0,0,0}));
-//        trainingSet.add(new DataSetRow(new double[]{0,1,0},
-//                new double[]{0,0,0,0,1,0}));
 
-        NeuralNetwork neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.SIGMOID,3,4,6);
+        // If right is free, turn right
+        trainingSet.add(new DataSetRow(new double[]{3,0,6,0,1,0,0},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{0,2,3,1,0,0,0},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{4,0,9,0,1,0,0},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{7,8,15,0,0,0,0},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{4,1,17,1,1,0,0},
+                new double[]{0,1,0,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{2,4,10,0,0,0,0},
+                new double[]{0,1,0,0,0,0}));
+
+        // If left is free, turn left
+        trainingSet.add(new DataSetRow(new double[]{1,4,2,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{3,8,4,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{6,15,8,1,0,1,1},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{0,2,0,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{2,9,6,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{3,11,5,1,0,1,1},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{9,18,4,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+        trainingSet.add(new DataSetRow(new double[]{4,7,2,1,0,1,0},
+                new double[]{0,0,1,0,0,0}));
+
+        NeuralNetwork neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.SIGMOID,7,4,6);
         neuralNetwork.randomizeWeights();
 
         for(int i = 0; i < 500; i++){
@@ -219,7 +351,7 @@ public class Tester {
         neuralNetwork.save("RobotAI.nnet");
     }
 
-    public static void Decide(int decision){
+    public static void decide(int decision){
         int[] coords = findR();
         int row = coords[0];
         int col = coords[1];
@@ -282,12 +414,18 @@ public class Tester {
 
     public static void tester(){
         for(int i=0; i<20; i++) {
-            int distance = IR();
-            int touching = Touch();
+            int distanceFront = IR_1();
+            int distanceLeft = IR_2();
+            int distanceRight = IR_3();
+
+            int touchingFront = Touch_1();
+            int touchingLeft = Touch_2();
+            int touchingRight = Touch_3();
+
             int st = state();
 
             NeuralNetwork neuralNetwork = NeuralNetwork.createFromFile("RobotAI.nnet");
-            neuralNetwork.setInput(distance,touching,st);
+            neuralNetwork.setInput(distanceFront,distanceLeft,distanceRight,touchingFront,touchingLeft,touchingRight,st);
             neuralNetwork.calculate();
 
             double[] classifications = neuralNetwork.getOutput();
@@ -302,18 +440,14 @@ public class Tester {
                 }
             }
 
-            Decide(maxIndex);
-
-//            decision = decide_how_to_move_Robot(classifications);
-//            moveR(decision.x,decision.y,decision.x2,decision.y2);
-//            print(decision);
+            decide(maxIndex);
             printWorld(world);
             System.out.println("------------------------------------------");
         }
     }
 
     public static void main(String[] args) {
-        Populate(world);
+        generate(world);
         world[10][10] = 'R';
 //        trainRobot();
 //        NeuralNetwork brain = NeuralNetwork.createFromFile("RobotAI.nnet");
@@ -323,8 +457,8 @@ public class Tester {
 //        moveR(5,0,15,2);
 //        for(int i = 0; i < 4; i++){
 //            dir = i;
-//            System.out.print(IR() + ", ");
-//            System.out.print(Touch() + ", ");
+//            System.out.print("Front: " + IR_1() + ", Left: " + IR_2() + ", Right: " + IR_3() + "\n");
+//            System.out.print(Touch_3() + ", ");
 //        }
 
     }
