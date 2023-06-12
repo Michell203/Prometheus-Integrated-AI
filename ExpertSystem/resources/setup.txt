@@ -1,0 +1,2 @@
+resources/facts.txt
+./src/RuleBases/robot.txt
