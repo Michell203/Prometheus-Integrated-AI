@@ -1,0 +1,2 @@
+RULE: WRONGWAY -isDir(b) => #TURN45 :END
+RULE: RIGHTWAY isDir(b) -$BG -$wall => #STEP :END

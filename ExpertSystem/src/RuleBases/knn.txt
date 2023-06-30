@@ -1,0 +1,6 @@
+KN: $A 1 => ISDIR(a) ISDIR(b) => a.txt :END
+KN: $B 1 => => b.txt :END
+KN: ISDIR(b) 1 => $BG $WALL => isdirb.txt :END
+KN: ISDIR(a) 1 => $BG $WALL => isdira.txt :END
+KN: $BG 1 => => bg.txt :END
+KN: $WALL 1 => => wall.txt :END

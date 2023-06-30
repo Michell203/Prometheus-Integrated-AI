@@ -1,7 +1,6 @@
 // Joseph Vybihal (c) 2022
 //
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 // Rule evaluation operates this way:
@@ -55,6 +54,29 @@ public class Rule {
                 else this.conditions.add(temp);
             }
             for (String a: act)   this.actions.add(new Clause(a));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    Rule(ArrayList<Clause> cond, ArrayList<Clause> act, String groupName) {
+        Clause temp;
+
+        this.fired      = false;
+        this.GroupName  = groupName;
+        this.conditions = new ArrayList<Clause>();
+        this.actions    = new ArrayList<Clause>();
+        this.variables  = new ArrayList<Variable>();
+        this.functions  = new ArrayList<Clause>();
+
+        try {
+            for (Clause c : cond) {
+                if (c.getPredicate().charAt(0) == '$') this.functions.add(c);
+                else this.conditions.add(c);
+
+            }
+            for (Clause a: act)   this.actions.add(a);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -130,6 +152,10 @@ public class Rule {
         return true;
     }
 
+    public ArrayList<Clause> getConds(){
+        return this.conditions;
+    }
+
     private String getVarVal(String aTerm) {
         if (aTerm.charAt(0) != '<') return new String(aTerm);
         else {
@@ -183,6 +209,10 @@ public class Rule {
 
     public String getGroupName() {
         return this.GroupName;
+    }
+
+    public ArrayList<Clause> getFunctions(){
+        return this.functions;
     }
 
     public String toString() {

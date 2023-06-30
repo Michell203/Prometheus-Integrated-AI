@@ -1,2 +1,2 @@
 resources/facts.txt
-./src/RuleBases/robot.txt
+./src/RuleBases/test.txt

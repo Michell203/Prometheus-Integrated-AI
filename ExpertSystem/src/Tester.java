@@ -13,7 +13,6 @@ public class Tester {
     static int dir = 0; // 0 = Down, 1 = Up, 2 = Left, 3 = Right
     static boolean panels = false;
     static boolean won = false;
-
     static boolean wait = false;
 
     public static void main(String[] args) throws Exception {
@@ -22,15 +21,18 @@ public class Tester {
         String factsfilename    = getFileName(setupfilename)[0];
 
         ArrayList<Clause> facts = new ArrayList<>();
+        ArrayList<Rule> newRules = new ArrayList<>();
         generate(world);
 
         for(int i=0; i<30; i++) {
             System.out.println("Input: ");
 
             facts.addAll(getSensorData());					// array list of facts (appended)
+//            facts.addAll(newFacts);
             Clause[] factsArr = facts.toArray(new Clause[facts.size()]);
 
             Productions p = new Productions(rulebasefilename, factsArr);
+            p.addToRuleBase(newRules);
             p.think();
             ArrayList<Clause> output = p.getMarkedFacts();			// runs to quiescence
 
@@ -73,15 +75,15 @@ public class Tester {
             }
 
             facts.clear(); // or, if useful, replace with: facts = loadFromFile(factsfilename);
-            p.optimizer();
-            ArrayList<Clause> inp = new ArrayList<>();
-            ArrayList<Clause> cmds = new ArrayList<>();
-            inp.add(new Clause("O"));
-            inp.add(new Clause("P"));
-            inp.add(new Clause("D"));
-            cmds.add(new Clause("C"));
-            cmds.add(new Clause("T"));
-            p.objectify(inp,cmds,1);
+            newRules.addAll(p.optimizer());
+//            ArrayList<Clause> inp = new ArrayList<>();
+//            ArrayList<Clause> cmds = new ArrayList<>();
+//            inp.add(new Clause("O"));
+//            inp.add(new Clause("P"));
+//            inp.add(new Clause("D"));
+//            cmds.add(new Clause("C"));
+//            cmds.add(new Clause("T"));
+//            p.objectify(inp,cmds,1);
 
             p.printRuleBase();
 

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 // Joseph Vybihal (c) 2022
 //
@@ -78,5 +79,17 @@ public class Clause {
 
     public String toString() {
         return this.predicate + " " + this.terms.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Clause){
+            if(this.getPredicate().equals(((Clause) obj).getPredicate()) && this.getTerms().equals(((Clause) obj).getTerms())){
+                return true;
+            }
+            return false;
+        }
+
+        return super.equals(obj);
     }
 }
