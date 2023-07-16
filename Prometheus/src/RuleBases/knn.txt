@@ -1,0 +1,16 @@
+NOTE:
+    KN: $A 1 => ISDIR(a) ISDIR(b) => a.txt :END
+    KN: $B 1 => => b.txt :END
+    KN: ISDIR(b) 1 => $BG $WALL => isdirb.txt :END
+    KN: NOTISDIR(b) 1 => $BG $WALL => notisdirb.txt :END
+    KN: $BG 1 => => bg.txt :END
+    KN: $WALL 1 => => wall.txt :END
+:ENDNOTE
+
+KN: $B 1 => => b.txt :END
+NOTE: KN: $ISDIRB 1 => MOVE => isdirb.txt :END :ENDNOTE
+KN: $FREE 1 => MOVE => free.txt :END
+NOTE: KN: $ADJACENTL 1 => => adjacentl.txt :END :ENDNOTE
+NOTE: KN: $ADJACENTR 1 => => adjacentr.txt :END :ENDNOTE
+KN: BGORWALL 1 => => bgorwall.txt :END
+NOTE: KN: MOVE 2 => => move.txt :END :ENDNOTE

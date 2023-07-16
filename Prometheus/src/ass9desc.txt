@@ -1,0 +1,127 @@
+ASSIGNMENT #9
+=============
+
+For this assignment we are building the basic flow between the NN+KNN+ES
+pipeline and META. We are NOT building the META. We will start building META
+in assignment 10. In Prometheus, the NN+KNN+ES is thought of as an
+automatic processes, like instinct. The output from the instinct is passed
+to a "higher" layer that will reflect, decide, and then execute a command.
+Note: more than one #command can be sent to META. It will be META's job to
+decide which #command to execute.
+
+Using ass8 find a way to produce output from the NN+KNN+ES pipeline such that
+the $classifications and #commands outputted at the end of the pipeline are
+available as input for META. This output is important to extract because it
+is needed as input for META.
+
+These $classifications need to be useful in the following ways:
+- help update the local map, and
+- help update the robot's state.
+
+The #commands need to be useful in the following ways:
+- used to generate the projected map for scoring given the updated local map
+- used as an argument to the dispatch() function to execute
+
+== STARTER MATERIAL ==
+
+You can use any of your previous assignments to help you. The prof may provide a
+solution code from the previous assignment.
+
+This assignment assumes you completed assignment 8 bonus.
+
+== ASSIGNMENT DESCRIPTION ==
+
+Add the following classes to your assignment 8 and call this assignment 9:
+
+// Your NN+KNN+ES pipeline must call the META constructor with the input it needs.
+// mostly empty for now
+class META {
+	private ArrayList<Clauses> classifications; // depending on your implementation <String>
+	private ArrayList<Clauses> commands;        // depending on your implementation <String>
+
+	META() {
+		this.classifications = new ArrayList<Clauses>();
+		this.commands        = new ArrayList<Clauses>();
+	}
+
+	public void clearInput() {
+		this.classification = nil;
+		this.commands       = nil;
+	}
+
+	public void think(ArrayList<Clause> classifications, ArrayList<Clauses> commands) {
+		this.classifications = classifications;
+		this.commands        = commands;
+	}
+
+	public void printClassifications() {}
+	public void printCommands() {}
+}
+
+// To make this easy, initialize the robot's local map to be the same as the World's local map
+// initialize x as the x-coord in the World map of the robot
+// initialize y as the y-coord in the World map of the robot
+// initialize direction as the robot's direction in the World map.
+// Create a function called update that changes the robot's local map, coordinates, and direction
+// based only on the same input into META.
+class Robot {
+	private char[][] localMap;
+	private int x,y,direction;
+
+	public void update(ArrayList<Clause> classifications, ArrayList<Clause> commands) {}
+	public void printLocalMap() {}
+	public void printPositionInfo() {}
+}
+
+Modify the assignment 8 program so that there are two bad-guys that randomly move around the
+World map at each iteration (if you have not done so already).
+
+To test assignment 9, assume an initial local map exists in the robot that matches the
+world map. Then update the local map with only the Robot.update() method. Then output the
+local map using Robot.printLocalMap() and the world map side by side to compare visually.
+They should be the same.
+
+
+Do the following:
+
+(A) Organize the output from assignment 8's NN+KNN+ES pipeline so that you can extract
+    the $classifications and #commands as the output of the pipeline.
+
+(B) Create the META class described above. Note that it is mostly empty of functionality.
+    The purpose is to populate the private variables 'classifications' and 'commands' with the
+	output from the NN+KNN+ES pipeline using the META.think() method. Also note, that the
+	type of the classifications and commands can be either Clause or String or a combination
+	of those two depending how you implemented assignment 8. The type is not that important.
+	What is important is that they are ArrayLists and there could be conflicting commands,
+	which our future META will need to evaluate. Implement all the methods outlined in the
+	above META pseudo code.
+
+(C) Create the Robot class. You may already have a similar class from assignment 8. The
+    important property of this Robot class is that it contains only the information the
+	robot knows. In other words, it contains only a subset of the information of the World
+	class of assignment 8. Implement all the methods and data structures outlined in the
+	above pseudo code.
+
+(D) Modify the Tester class from assignment 8 adding the META and Robot classes. Add to the
+    Tester's main() method loop the following: (a) at the end of the NN+KNN+ES pipeline
+	call META.think() to populate it's private variables. (b) then call Robot.update() to
+	update the robot's local map with the arguments from the method update(). (c) where you
+	already print the World map, also print the robot's local map, robot's positional information,
+	and META's classifications and commands. (d) add the two randomly moving bad guys. (e) you
+	may want to update your rulebases.
+
+== WHAT TO HAND IN ==
+
+The minimum requirements for Part B:
+
+Volunteer: A
+COMP 396 : A & B
+COMP 400 : A & B & C
+Bonus    : A & B & C & D
+
+You are encouraged to complete more than the minimum requirements but if you only complete
+the minimum requirements, then that is considered "full points".
+
+Completing COMP 396, for a volunteer, is considered Bonus.
+Completing COMP 400, for a COMP 396 student, is considered Bonus.
+Everyone should try to solve as much as they can.

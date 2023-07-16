@@ -1,0 +1,124 @@
+ASSIGNMENT #8
+=============
+
+This assignment is due in 2 weeks. No lecture in between.
+
+In this assignment we would like to integrate all the layers of the AI we have
+studied to this point into a single solution for the problem presented in
+assignment 7. The classes we have previously created are GTN, KNN, and ES. We
+want to add to this classes World and Prometheus.perceptron.Tester. Class World will model the
+assignment 7 problem, and class Prometheus.perceptron.Tester will be the run-time environment that
+will prove that your AI pipeline can solve the assignment 7 problem.
+
+An "AI Pipeline" is a group of interconnecting technologies. Input is inserted
+at one end of the pipeline and an output emerges from the other end of the
+pipeline.
+
+== STARTER MATERIAL ==
+
+You can use any of your previous assignments to help you. The prof may provide a
+solution code from the previous assignment.
+
+This assignment assumes you completed assignment 7.
+
+== ASSIGNMENT DESCRIPTION ==
+
+You are being asked to build the following classes (World and Prometheus.perceptron.Tester) and import classes from previous
+assignments. Specifically you will need to import the following classes: GTN, KNN and ES.
+Then you will need to build the World class and upgrade your Prometheus.perceptron.Tester class to look as described bellow.
+
+class World {
+   private char map[][];		// important for these to be private
+   private int robotX, robotY, direction;
+
+   world(char[][] map, int x, int y, int dir) { this.map = map; robotX=x; robotY=y; direction=dir; }
+
+   public int sensorType1() { bla }		// getters
+   public String sensirType2() { bla }
+   public void displayMap() { bla }		// displays map & robot vars
+
+   public void motorType1(int param) { bla }	// setters
+   public void motorType2(int param) { bla }
+}
+
+class Prometheus.perceptron.Tester {
+   public static void main() {
+	World w= new world({...},10,10,1};
+
+	GTN nn = new GTN(); // The general tree network
+	ES  es = new ES();  // The production system
+	KNN kn = new KNN(); // The knowledge node network
+
+	ArrayList<String> sensors;   // classification strings from the GTN
+	ArrayList<Rule> productions; // list of fired rules from KNN
+	ArrayList<Strings> commands; // list of fired # commands
+
+	w.displayMap();
+	for(i=0;i<20;i++) {
+		sensors     = nn.think();
+		productions = kn.think(sensors);
+		commands    = es.think(sensors, productions);
+
+		dispatch(commands); // call's world's setters
+		badguys();	    // call's world's setters to update badbuy(s).
+		w.displayMap();
+	}
+   }
+}
+
+Your goal is to solve the robot travelling down the hallway problem taking full
+advantage of all the layers of the AI. In other words: sensor data enters the NN.
+Classifications exit the NN. These classifications trigger knowledge nodes that
+output rulesbases. The rulesbases from the KNN and the classifications from the NN
+are collected together and sent to the ES. The ES uses the classifications as
+input facts and the rulesbases as the productions. Finally the ES outputs a #command(s).
+The tester will update the robot's position based on the #command(s). This repeats
+until the robot wins, loses, or runs out of iterations.
+
+The above pseudo-code for the World and Prometheus.perceptron.Tester will need to be modified in some ways
+for your implementation, but be careful not to change things beyond the scope of
+the assignment. Message me if you have questions.
+
+Do the following:
+
+(A) Create the World class. Make the map and robot position variables private. The
+    Prometheus.perceptron.Tester can only know information about the map and robot from the sensors and
+    actuator functions, which are implemented as public methods within the World
+    class. Then, populate the Prometheus.perceptron.Tester class' main method will only have a single call
+    to the World's printMap() method to verify that this has been loaded correctly.
+    Do not implement the other parts of the Prometheus.perceptron.Tester for (A).
+
+(B) Copy the GTN (assignment 3), ES (Assignment 5B) and KNN (assignment 7) classes you
+    created previously. Make sure they work and you know what constructor parameters
+    you need. Then, add to the Prometheus.perceptron.Tester class' main method a call to each class that verifies
+    that each layer (GTN, KNN, and ES) works well on its own by printing the data stored in
+    each knowledge base. Do not implement the other parts of the Prometheus.perceptron.Tester for (B).
+
+(C) Keep the tester printout you provided in (A) and (B). Under those prinouts, add the tester
+    code as described above. Use a simple knowledge node network and sensor inputs to prove that
+    the pipeline works. Make the for-loop iterate only once on a dummy problem. Do not
+    implment the solution for assignment 7 for (C). We just want to see that the pipeline
+    can take input from one end and give output from the other end. Modify the tester's dispatch
+    method to output the #commands it received. Since the tester already outputs the map and
+    robot statistics, this should be enough to verify that your pipeline functions.
+
+(D) Using the knowledge base you created in assignment 7. Get the robot to travel from
+    one end of the hallway to the other end successfully, given the problem parameters
+    outlined from assignment 7. You will probably have to fix your rulesbases and knowledge
+    nodes to function as-per specifications and to solve the problem correctly.
+
+== WHAT TO HAND IN ==
+
+The minimum requirements for Part B:
+
+Volunteer: A
+COMP 396 : A & B
+COMP 400 : A & B & C
+Bonus    : A & B & C & D
+
+You are encouraged to complete more than the minimum requirements but if you only complete
+the minimum requirements, then that is considered "full points".
+
+Completing COMP 396, for a volunteer, is considered Bonus.
+Completing COMP 400, for a COMP 396 student, is considered Bonus.
+Everyone should try to solve as much as they can.
